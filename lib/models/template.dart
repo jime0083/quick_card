@@ -43,9 +43,9 @@ class TemplateData {
       id: 'template_02',
       name: 'ダーク・テック',
       description: '黒背景、ネオン風アクセント',
-      backgroundColor: Color(0xFF1A1A1A),
+      backgroundColor: Color(0xFF3333FF), // #3333ffに変更
       textColor: Colors.white,
-      accentColor: Color(0xFF00FF88),
+      accentColor: Color(0xFFFF4D85), // #ff4d85に変更
       fontSize: 14.0,
       padding: EdgeInsets.all(16.0),
       borderRadius: BorderRadius.all(Radius.circular(8.0)),
