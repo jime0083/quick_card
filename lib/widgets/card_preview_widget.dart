@@ -273,7 +273,7 @@ class CardPreviewWidget extends StatelessWidget {
                   Text(
                     card.personalInfo.nameJa,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: _isTemplate5() ? Colors.black : Colors.white,
                       fontSize: (template.fontSize + 2) * 1.5,
                       fontWeight: FontWeight.bold,
                       fontFamily: template.fontFamily ?? 'Arial',
@@ -287,7 +287,7 @@ class CardPreviewWidget extends StatelessWidget {
                   Text(
                     card.personalInfo.nameEn,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: _isTemplate5() ? Colors.black : Colors.white,
                       fontSize: (template.fontSize - 2) * 1.2,
                       fontWeight: FontWeight.w400,
                       fontFamily: template.fontFamily ?? 'Arial',
@@ -301,7 +301,7 @@ class CardPreviewWidget extends StatelessWidget {
                   Text(
                     card.personalInfo.profession,
                     style: TextStyle(
-                      color: Colors.black,
+                      color: _isTemplate5() ? const Color(0xFF3333FF) : (_isTemplate6() ? Colors.lightBlue : Colors.black),
                       fontSize: (template.fontSize - 2) * 1.2,
                       fontWeight: FontWeight.w500,
                       fontFamily: template.fontFamily ?? 'Arial',
@@ -317,13 +317,16 @@ class CardPreviewWidget extends StatelessWidget {
         // 右側：SNS・連絡先
         Expanded(
           flex: 1,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start, // centerからstartに変更
-            children: [
-              const SizedBox(height: 50), // 40から50に変更（10px増加）
-              _buildTemplate4SnsContent(template),
-            ],
+          child: Padding(
+            padding: EdgeInsets.only(left: _isTemplate5() ? 40.0 : 0.0), // テンプレート5の場合は左側に40pxの空白
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start, // centerからstartに変更
+              children: [
+                const SizedBox(height: 50), // 40から50に変更（10px増加）
+                _buildTemplate4SnsContent(template),
+              ],
+            ),
           ),
         ),
       ],
@@ -489,7 +492,7 @@ class CardPreviewWidget extends StatelessWidget {
           Text(
             category,
             style: TextStyle(
-              color: const Color(0xFFFF4D85), // #ff4d85
+              color: _isTemplate5() ? const Color(0xFF3333FF) : const Color(0xFFFF4D85), // テンプレート5の場合は#3333ff
               fontSize: (template.fontSize - 6) * 1.8, // 文字サイズを小さく
               fontWeight: FontWeight.bold,
               fontFamily: template.fontFamily ?? 'Arial',
@@ -524,7 +527,7 @@ class CardPreviewWidget extends StatelessWidget {
                        child: Text(
                          content1,
                          style: TextStyle(
-                           color: Colors.white,
+                           color: _isTemplate5() ? Colors.black : Colors.white,
                            fontSize: (template.fontSize - 8) * 1.8, // 文字サイズを小さく
                            fontFamily: template.fontFamily ?? 'Arial',
                          ),
@@ -557,7 +560,7 @@ class CardPreviewWidget extends StatelessWidget {
                        child: Text(
                          content2,
                          style: TextStyle(
-                           color: Colors.white,
+                           color: _isTemplate5() ? Colors.black : Colors.white,
                            fontSize: (template.fontSize - 8) * 1.8, // 文字サイズを小さく
                            fontFamily: template.fontFamily ?? 'Arial',
                          ),
@@ -571,7 +574,7 @@ class CardPreviewWidget extends StatelessWidget {
                  Text(
                    content1,
                    style: TextStyle(
-                     color: Colors.white,
+                     color: _isTemplate5() ? Colors.black : Colors.white,
                      fontSize: (template.fontSize - 8) * 1.8, // 文字サイズを小さく
                      fontFamily: template.fontFamily ?? 'Arial',
                    ),
@@ -582,7 +585,7 @@ class CardPreviewWidget extends StatelessWidget {
                  Text(
                    content2,
                    style: TextStyle(
-                     color: Colors.white,
+                     color: _isTemplate5() ? Colors.black : Colors.white,
                      fontSize: (template.fontSize - 8) * 1.8, // 文字サイズを小さく
                      fontFamily: template.fontFamily ?? 'Arial',
                    ),
@@ -595,7 +598,7 @@ class CardPreviewWidget extends StatelessWidget {
              Text(
                content3,
                style: TextStyle(
-                 color: Colors.white,
+                 color: _isTemplate5() ? Colors.black : Colors.white,
                  fontSize: (template.fontSize - 8) * 1.8, // 文字サイズを小さく
                  fontFamily: template.fontFamily ?? 'Arial',
                ),
