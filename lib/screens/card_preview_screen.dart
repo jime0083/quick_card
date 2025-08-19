@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
+import '../l10n/app_localizations.dart';
 import '../models/business_card.dart';
 import '../models/template.dart';
 import '../services/qr_service.dart';
@@ -50,33 +51,33 @@ class _CardPreviewScreenState extends State<CardPreviewScreen> {
           PopupMenuButton<String>(
             onSelected: _handleMenuAction,
             itemBuilder: (context) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'edit',
                 child: Row(
                   children: [
-                    Icon(Icons.edit),
-                    SizedBox(width: 8),
-                    Text('編集'),
+                    const Icon(Icons.edit),
+                    const SizedBox(width: 8),
+                    Text(AppLocalizations.of(context)!.edit),
                   ],
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'share',
                 child: Row(
                   children: [
-                    Icon(Icons.share),
-                    SizedBox(width: 8),
-                    Text('共有'),
+                    const Icon(Icons.share),
+                    const SizedBox(width: 8),
+                    Text(AppLocalizations.of(context)!.share),
                   ],
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'save',
                 child: Row(
                   children: [
-                    Icon(Icons.save),
-                    SizedBox(width: 8),
-                    Text('画像保存'),
+                    const Icon(Icons.save),
+                    const SizedBox(width: 8),
+                    Text(AppLocalizations.of(context)!.download),
                   ],
                 ),
               ),

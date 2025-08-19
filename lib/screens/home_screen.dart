@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../models/business_card.dart';
 import '../services/business_card_service.dart';
 import '../providers/card_provider.dart';
@@ -36,9 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Quick Card',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context)!.appTitle,
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
@@ -60,9 +61,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        '背景画像を選択してください',
-                        style: TextStyle(
+                      Text(
+                        AppLocalizations.of(context)!.selectBackground,
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -85,9 +86,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          '作成済みの名刺',
-                          style: TextStyle(
+                        Text(
+                          AppLocalizations.of(context)!.myCards,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -145,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Icon(Icons.image, size: 40, color: Colors.grey[400]),
                             const SizedBox(height: 8),
                             Text(
-                              'テンプレート${index + 1}',
+                              '${AppLocalizations.of(context)!.selectTemplate} ${index + 1}',
                               style: TextStyle(
                                 color: Colors.grey[600],
                                 fontSize: 16,
@@ -174,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   bottom: 12,
                   left: 12,
                   child: Text(
-                    'テンプレート${index + 1}',
+                    '${AppLocalizations.of(context)!.selectTemplate} ${index + 1}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -225,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Text(
                           card.personalInfo.nameJa.isNotEmpty
                               ? card.personalInfo.nameJa
-                              : '名前未設定',
+                              : AppLocalizations.of(context)!.pleaseEnterName,
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey[600],
@@ -247,43 +248,43 @@ class _HomeScreenState extends State<HomeScreen> {
                   PopupMenuButton<String>(
                     onSelected: (value) => _handleCardAction(value, card),
                     itemBuilder: (context) => [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'edit',
                         child: Row(
                           children: [
-                            Icon(Icons.edit),
-                            SizedBox(width: 8),
-                            Text('編集'),
+                            const Icon(Icons.edit),
+                            const SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)!.edit),
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'duplicate',
                         child: Row(
                           children: [
-                            Icon(Icons.copy),
-                            SizedBox(width: 8),
-                            Text('複製'),
+                            const Icon(Icons.copy),
+                            const SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)!.duplicate),
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'share',
                         child: Row(
                           children: [
-                            Icon(Icons.share),
-                            SizedBox(width: 8),
-                            Text('共有'),
+                            const Icon(Icons.share),
+                            const SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)!.share),
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'delete',
                         child: Row(
                           children: [
-                            Icon(Icons.delete, color: Colors.red),
-                            SizedBox(width: 8),
-                            Text('削除', style: TextStyle(color: Colors.red)),
+                            const Icon(Icons.delete, color: Colors.red),
+                            const SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)!.delete, style: const TextStyle(color: Colors.red)),
                           ],
                         ),
                       ),
@@ -302,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    '更新: ${_formatDate(card.updatedAt)}',
+                    AppLocalizations.of(context)!.updated(_formatDate(card.updatedAt)),
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[500],
@@ -322,11 +323,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final difference = now.difference(date);
 
     if (difference.inDays == 0) {
-      return '今日';
+      return AppLocalizations.of(context)!.today;
     } else if (difference.inDays == 1) {
-      return '昨日';
+      return AppLocalizations.of(context)!.yesterday;
     } else if (difference.inDays < 7) {
-      return '${difference.inDays}日前';
+      return AppLocalizations.of(context)!.daysAgo(difference.inDays);
     } else {
       return '${date.month}/${date.day}';
     }
@@ -383,8 +384,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final duplicatedCard = BusinessCardService.duplicateCard(card);
     context.read<CardProvider>().addCard(duplicatedCard);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('名刺を複製しました'),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.cardDuplicated),
         backgroundColor: Colors.green,
       ),
     );
@@ -393,8 +394,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void _shareCard(BusinessCard card) {
     // TODO: 共有機能を実装
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('共有機能は準備中です'),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.shareFeatureComingSoon),
         backgroundColor: Colors.orange,
       ),
     );
@@ -404,27 +405,27 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('名刺を削除'),
-        content: Text('「${card.name}」を削除しますか？'),
+        title: Text(AppLocalizations.of(context)!.deleteCardTitle),
+        content: Text(AppLocalizations.of(context)!.deleteCardMessage(card.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('キャンセル'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () {
               context.read<CardProvider>().deleteCard(card.id);
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('名刺を削除しました'),
+                SnackBar(
+                  content: Text(AppLocalizations.of(context)!.cardDeleted),
                   backgroundColor: Colors.red,
                 ),
               );
             },
-            child: const Text(
-              '削除',
-              style: TextStyle(color: Colors.red),
+            child: Text(
+              AppLocalizations.of(context)!.delete,
+              style: const TextStyle(color: Colors.red),
             ),
           ),
         ],

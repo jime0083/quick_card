@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+import '../l10n/app_localizations.dart';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:convert';
@@ -108,65 +109,17 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('名刺表面情報入力 (テンプレート ${widget.backgroundIndex + 1})'),
+        title: Text('${AppLocalizations.of(context)!.frontSide} (${AppLocalizations.of(context)!.selectTemplate} ${widget.backgroundIndex + 1})'),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          // 背景画像プレビュー
-          Container(
-            width: double.infinity,
-            height: 200,
-            margin: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                widget.backgroundImage,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.grey[200],
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.image, size: 40, color: Colors.grey[400]),
-                          const SizedBox(height: 8),
-                          Text(
-                            'テンプレート${widget.backgroundIndex + 1}',
-                            style: TextStyle(color: Colors.grey[600]),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-          // 入力フォーム
-          Expanded(
-            child: Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: _buildInputForm(),
-              ),
-            ),
-          ),
-        ],
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: _buildInputForm(),
+        ),
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
@@ -180,9 +133,9 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: const Text(
-            '裏面情報入力に進む',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          child: Text(
+            AppLocalizations.of(context)!.backSide,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -193,9 +146,9 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '名刺表面情報',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        Text(
+          AppLocalizations.of(context)!.frontSide,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         
@@ -236,7 +189,7 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
                   child: ElevatedButton.icon(
                     onPressed: _pickImageFromGallery,
                     icon: const Icon(Icons.photo_library),
-                    label: const Text('カメラロールから選択'),
+                    label: Text(AppLocalizations.of(context)!.selectFromGallery),
                   ),
                 ),
                 if (_selectedIconImageBytes != null) ...[
@@ -250,7 +203,7 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
                         });
                       },
                       icon: const Icon(Icons.delete, color: Colors.red),
-                      label: const Text('画像を削除', style: TextStyle(color: Colors.red)),
+                      label: Text(AppLocalizations.of(context)!.deleteImage, style: const TextStyle(color: Colors.red)),
                     ),
                   ),
                 ],
@@ -264,14 +217,14 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
         // 氏名（日本語）
         TextFormField(
           controller: _nameJaController,
-          decoration: const InputDecoration(
-            labelText: '氏名（日本語）',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.person),
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.nameJapanese,
+            border: const OutlineInputBorder(),
+            prefixIcon: const Icon(Icons.person),
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return '氏名（日本語）は必須です';
+              return AppLocalizations.of(context)!.nameJapaneseRequired;
             }
             return null;
           },
@@ -281,14 +234,14 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
         // 氏名（英語）
         TextFormField(
           controller: _nameEnController,
-          decoration: const InputDecoration(
-            labelText: '氏名（英語）',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.person_outline),
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.nameEnglish,
+            border: const OutlineInputBorder(),
+            prefixIcon: const Icon(Icons.person_outline),
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return '氏名（英語）は必須です';
+              return AppLocalizations.of(context)!.nameEnglishRequired;
             }
             return null;
           },
@@ -298,10 +251,10 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
         // 職業選択
         DropdownButtonFormField<String>(
           value: _selectedProfession,
-          decoration: const InputDecoration(
-            labelText: '職業',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.work),
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.profession,
+            border: const OutlineInputBorder(),
+            prefixIcon: const Icon(Icons.work),
           ),
           items: _professionOptions.map((profession) {
             return DropdownMenuItem(
@@ -318,9 +271,9 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
         const SizedBox(height: 24),
         
         // SNS選択セクション
-        const Text(
-          'SNS・連絡先（4つまで選択）',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        Text(
+          AppLocalizations.of(context)!.snsContact,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         

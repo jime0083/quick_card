@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import '../models/business_card.dart';
@@ -28,16 +29,16 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
   final _formKey = GlobalKey<FormState>();
   
   // 裏面カテゴリ選択
-  final List<String> _availableCategories = ['言語', 'FW(フレームワーク)', '資格', '経歴', 'ポートフォリオ'];
+  final List<String> _availableCategories = ['language', 'framework', 'qualification', 'career', 'portfolio'];
   List<String> _selectedCategories = [];
   
   // 各カテゴリの入力フィールド（行数に応じて調整）
   final Map<String, List<TextEditingController>> _controllers = {
-    '言語': [TextEditingController()], // 1行
-    'FW(フレームワーク)': [TextEditingController()], // 1行
-    '資格': [TextEditingController()], // 1行
-    '経歴': [TextEditingController(), TextEditingController(), TextEditingController()], // 3行
-    'ポートフォリオ': [TextEditingController(), TextEditingController()], // 2行
+    'language': [TextEditingController()], // 1行
+    'framework': [TextEditingController()], // 1行
+    'qualification': [TextEditingController()], // 1行
+    'career': [TextEditingController(), TextEditingController(), TextEditingController()], // 3行
+    'portfolio': [TextEditingController(), TextEditingController()], // 2行
   };
 
   @override
@@ -53,28 +54,28 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
       
       // 各カテゴリのデータを読み込み
       if (backSideInfo.language1 != null) {
-        _controllers['言語']![0].text = backSideInfo.language1!;
+        _controllers['language']![0].text = backSideInfo.language1!;
       }
       if (backSideInfo.framework1 != null) {
-        _controllers['FW(フレームワーク)']![0].text = backSideInfo.framework1!;
+        _controllers['framework']![0].text = backSideInfo.framework1!;
       }
       if (backSideInfo.qualification1 != null) {
-        _controllers['資格']![0].text = backSideInfo.qualification1!;
+        _controllers['qualification']![0].text = backSideInfo.qualification1!;
       }
       if (backSideInfo.career1 != null) {
-        _controllers['経歴']![0].text = backSideInfo.career1!;
+        _controllers['career']![0].text = backSideInfo.career1!;
       }
       if (backSideInfo.career2 != null) {
-        _controllers['経歴']![1].text = backSideInfo.career2!;
+        _controllers['career']![1].text = backSideInfo.career2!;
       }
       if (backSideInfo.career3 != null) {
-        _controllers['経歴']![2].text = backSideInfo.career3!;
+        _controllers['career']![2].text = backSideInfo.career3!;
       }
       if (backSideInfo.portfolio1 != null) {
-        _controllers['ポートフォリオ']![0].text = backSideInfo.portfolio1!;
+        _controllers['portfolio']![0].text = backSideInfo.portfolio1!;
       }
       if (backSideInfo.portfolio2 != null) {
-        _controllers['ポートフォリオ']![1].text = backSideInfo.portfolio2!;
+        _controllers['portfolio']![1].text = backSideInfo.portfolio2!;
       }
     }
   }
@@ -93,65 +94,17 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('名刺裏面情報入力 (テンプレート ${widget.backgroundIndex + 1})'),
+        title: Text('${AppLocalizations.of(context)!.backSide} (${AppLocalizations.of(context)!.selectTemplate} ${widget.backgroundIndex + 1})'),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          // 背景画像プレビュー
-          Container(
-            width: double.infinity,
-            height: 150,
-            margin: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                _getBackgroundImage(),
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.grey[200],
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.image, size: 40, color: Colors.grey[400]),
-                          const SizedBox(height: 8),
-                          Text(
-                            'テンプレート${widget.backgroundIndex + 1} 裏面',
-                            style: TextStyle(color: Colors.grey[600]),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-          // 入力フォーム
-          Expanded(
-            child: Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: _buildInputForm(),
-              ),
-            ),
-          ),
-        ],
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: _buildInputForm(),
+        ),
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
@@ -165,9 +118,9 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: const Text(
-            '名刺を作成',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          child: Text(
+            AppLocalizations.of(context)!.createCard,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -233,7 +186,7 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
                 children: _availableCategories.map((category) {
                   final isSelected = _selectedCategories.contains(category);
                   return FilterChip(
-                    label: Text(category),
+                    label: Text(_getCategoryDisplayName(category)),
                     selected: isSelected,
                     onSelected: (selected) {
                       setState(() {
@@ -265,9 +218,9 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
         
         // 選択されたカテゴリの入力フィールド
         if (_selectedCategories.isNotEmpty) ...[
-          const Text(
-            '各項目の内容を入力してください',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.of(context)!.enterContentForEachItem,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           
@@ -296,7 +249,7 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            category,
+            _getCategoryDisplayName(category),
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -305,7 +258,7 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
           ),
           const SizedBox(height: 12),
           // カテゴリに応じて入力フィールド数を調整
-          if (category == '言語' || category == 'FW(フレームワーク)' || category == '資格') ...[
+          if (category == 'language' || category == 'framework' || category == 'qualification') ...[
             TextFormField(
               controller: controllers[0],
               decoration: const InputDecoration(
@@ -316,11 +269,11 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
               ),
               maxLines: 1,
             ),
-          ] else if (category == '経歴') ...[
+          ] else if (category == 'career') ...[
             TextFormField(
               controller: controllers[0],
               decoration: const InputDecoration(
-                labelText: '1行目',
+                labelText: '30文字程度',
                 border: OutlineInputBorder(),
                 filled: true,
                 fillColor: Colors.white,
@@ -331,7 +284,7 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
             TextFormField(
               controller: controllers[1],
               decoration: const InputDecoration(
-                labelText: '2行目',
+                labelText: '30文字程度',
                 border: OutlineInputBorder(),
                 filled: true,
                 fillColor: Colors.white,
@@ -342,18 +295,17 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
             TextFormField(
               controller: controllers[2],
               decoration: const InputDecoration(
-                labelText: '3行目',
+                labelText: '30文字程度',
                 border: OutlineInputBorder(),
                 filled: true,
                 fillColor: Colors.white,
               ),
               maxLines: 1,
             ),
-          ] else if (category == 'ポートフォリオ') ...[
+          ] else if (category == 'portfolio') ...[
             TextFormField(
               controller: controllers[0],
               decoration: const InputDecoration(
-                labelText: '1行目',
                 border: OutlineInputBorder(),
                 filled: true,
                 fillColor: Colors.white,
@@ -364,7 +316,6 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
             TextFormField(
               controller: controllers[1],
               decoration: const InputDecoration(
-                labelText: '2行目',
                 border: OutlineInputBorder(),
                 filled: true,
                 fillColor: Colors.white,
@@ -377,6 +328,23 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
     );
   }
 
+  String _getCategoryDisplayName(String category) {
+    switch (category) {
+      case 'language':
+        return AppLocalizations.of(context)!.language;
+      case 'framework':
+        return AppLocalizations.of(context)!.framework;
+      case 'qualification':
+        return AppLocalizations.of(context)!.qualification;
+      case 'career':
+        return AppLocalizations.of(context)!.career;
+      case 'portfolio':
+        return AppLocalizations.of(context)!.portfolio;
+      default:
+        return category;
+    }
+  }
+
   String _encodeImageToBase64(Uint8List imageBytes) {
     return base64Encode(imageBytes);
   }
@@ -384,7 +352,7 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
   void _saveCard() {
     if (_selectedCategories.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('1つ以上の項目を選択してください')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.selectAtLeastOneItem)),
       );
       return;
     }
@@ -395,17 +363,17 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
     // BackSideInfoを作成
     final backSideInfo = BackSideInfo(
       selectedCategories: List.from(_selectedCategories),
-      language1: _controllers['言語']?[0].text.trim(),
+      language1: _controllers['language']?[0].text.trim(),
       language2: null, // 1行のみ
-      framework1: _controllers['FW(フレームワーク)']?[0].text.trim(),
+      framework1: _controllers['framework']?[0].text.trim(),
       framework2: null, // 1行のみ
-      qualification1: _controllers['資格']?[0].text.trim(),
+      qualification1: _controllers['qualification']?[0].text.trim(),
       qualification2: null, // 1行のみ
-      career1: _controllers['経歴']?[0].text.trim(),
-      career2: _controllers['経歴']?[1].text.trim(),
-      career3: _controllers['経歴']?[2].text.trim(),
-      portfolio1: _controllers['ポートフォリオ']?[0].text.trim(),
-      portfolio2: _controllers['ポートフォリオ']?[1].text.trim(),
+      career1: _controllers['career']?[0].text.trim(),
+      career2: _controllers['career']?[1].text.trim(),
+      career3: _controllers['career']?[2].text.trim(),
+      portfolio1: _controllers['portfolio']?[0].text.trim(),
+      portfolio2: _controllers['portfolio']?[1].text.trim(),
     );
 
     // 既存のカードがある場合は更新、ない場合は新規作成

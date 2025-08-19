@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'l10n/app_localizations.dart';
 import 'services/business_card_service.dart';
 import 'providers/card_provider.dart';
 import 'providers/language_provider.dart';
@@ -36,6 +38,16 @@ class MyApp extends StatelessWidget {
               useMaterial3: true,
             ),
             locale: languageProvider.currentLocale,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('ja', 'JP'),
+              Locale('en', 'US'),
+            ],
             home: languageProvider.isFirstLaunch
                 ? const LanguageSelectionScreen()
                 : const HomeScreen(),

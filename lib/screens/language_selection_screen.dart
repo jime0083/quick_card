@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../providers/language_provider.dart';
 import 'home_screen.dart';
 
@@ -34,18 +35,18 @@ class LanguageSelectionScreen extends StatelessWidget {
                     color: Colors.white,
                   ),
                   const SizedBox(height: 24),
-                  const Text(
-                    'Quick Card',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.appTitle,
+                    style: const TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    '名刺作成アプリ',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.appSubtitle,
+                    style: const TextStyle(
                       fontSize: 18,
                       color: Colors.white70,
                     ),
@@ -53,10 +54,10 @@ class LanguageSelectionScreen extends StatelessWidget {
                   const SizedBox(height: 64),
                   
                   // 言語選択タイトル
-                  const Text(
-                    '言語を選択してください\nPlease select your language',
+                  Text(
+                    AppLocalizations.of(context)!.selectLanguage,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -67,14 +68,14 @@ class LanguageSelectionScreen extends StatelessWidget {
                   // 言語選択ボタン
                   _buildLanguageButton(
                     context,
-                    '日本語',
+                    AppLocalizations.of(context)!.japanese,
                     'ja',
                     Icons.language,
                   ),
                   const SizedBox(height: 16),
                   _buildLanguageButton(
                     context,
-                    'English',
+                    AppLocalizations.of(context)!.english,
                     'en',
                     Icons.language,
                   ),
