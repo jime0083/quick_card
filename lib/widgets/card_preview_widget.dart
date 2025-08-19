@@ -144,27 +144,24 @@ class CardPreviewWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // アイコン画像（中央揃え）- 画像がない場合もスペースを確保
-        // テンプレート2の場合は画像アップロード機能を削除
-        if (!_isTemplate2()) ...[
-          Center(
-            child: Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.white,
-                  width: 3,
-                ),
-              ),
-              child: ClipOval(
-                child: card.personalInfo.iconImage != null
-                    ? _buildIconImage(card.personalInfo.iconImage!)
-                    : _buildPlaceholderIcon(),
+        Center(
+          child: Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white,
+                width: 3,
               ),
             ),
+            child: ClipOval(
+              child: card.personalInfo.iconImage != null
+                  ? _buildIconImage(card.personalInfo.iconImage!)
+                  : _buildPlaceholderIcon(),
+            ),
           ),
-        ],
+        ),
         const SizedBox(height: 6), // 12から6に変更
         // 名前情報（中央揃え）
         _buildHeader(template),
@@ -193,7 +190,7 @@ class CardPreviewWidget extends StatelessWidget {
             color: _getUnderlineColor(),
           ),
         ],
-        SizedBox(height: _isTemplate2() ? 200.0 : 30.0),
+        SizedBox(height: _isTemplate2() ? 50.0 : 30.0),
         // SNS情報
         _buildFrontContent(template),
         const Spacer(),
@@ -663,7 +660,7 @@ class CardPreviewWidget extends StatelessWidget {
             child: Text(
               card.personalInfo.nameJa,
               style: TextStyle(
-                color: _isTemplate2() ? Colors.white : template.textColor,
+                color: _isTemplate2() ? Colors.black : template.textColor,
                 fontSize: (template.fontSize + 4) * 2,
                 fontWeight: FontWeight.bold,
                 fontFamily: template.fontFamily ?? 'Arial',
@@ -676,7 +673,7 @@ class CardPreviewWidget extends StatelessWidget {
             child: Text(
               card.personalInfo.nameEn,
               style: TextStyle(
-                color: _isTemplate2() ? Colors.white : template.textColor,
+                color: _isTemplate2() ? Colors.black : template.textColor,
                 fontSize: (template.fontSize - 2) * 2,
                 fontFamily: template.fontFamily ?? 'Arial',
               ),

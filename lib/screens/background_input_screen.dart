@@ -152,66 +152,64 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
         ),
         const SizedBox(height: 16),
         
-        // アイコン画像選択（テンプレート2の場合は非表示）
-        if (!_isTemplate2()) ...[
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey[300]!),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('アイコン画像', style: TextStyle(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 12),
-                if (_selectedIconImageBytes != null) ...[
-                  Center(
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]!),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.memory(
-                          _selectedIconImageBytes!,
-                          fit: BoxFit.cover,
-                        ),
+        // アイコン画像選択
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('アイコン画像', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 12),
+              if (_selectedIconImageBytes != null) ...[
+                Center(
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey[300]!),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.memory(
+                        _selectedIconImageBytes!,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                ],
-                Center(
-                  child: ElevatedButton.icon(
-                    onPressed: _pickImageFromGallery,
-                    icon: const Icon(Icons.photo_library),
-                    label: Text(AppLocalizations.of(context)!.selectFromGallery),
                   ),
                 ),
-                if (_selectedIconImageBytes != null) ...[
-                  const SizedBox(height: 8),
-                  Center(
-                    child: TextButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          _selectedIconImage = null;
-                          _selectedIconImageBytes = null;
-                        });
-                      },
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      label: Text(AppLocalizations.of(context)!.deleteImage, style: const TextStyle(color: Colors.red)),
-                    ),
-                  ),
-                ],
+                const SizedBox(height: 12),
               ],
-            ),
+              Center(
+                child: ElevatedButton.icon(
+                  onPressed: _pickImageFromGallery,
+                  icon: const Icon(Icons.photo_library),
+                  label: Text(AppLocalizations.of(context)!.selectFromGallery),
+                ),
+              ),
+              if (_selectedIconImageBytes != null) ...[
+                const SizedBox(height: 8),
+                Center(
+                  child: TextButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _selectedIconImage = null;
+                        _selectedIconImageBytes = null;
+                      });
+                    },
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    label: Text(AppLocalizations.of(context)!.deleteImage, style: const TextStyle(color: Colors.red)),
+                  ),
+                ),
+              ],
+            ],
           ),
-          const SizedBox(height: 16),
-        ],
+        ),
+        const SizedBox(height: 16),
         const SizedBox(height: 16),
         
         // 氏名（日本語）

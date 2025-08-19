@@ -354,14 +354,12 @@ class _CardPreviewScreenState extends State<CardPreviewScreen> {
   }
 
   void _editCard() {
-    // 背景画像選択画面から編集を開始
+    // 直接情報入力画面に移動
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BackgroundInputScreen(
-          backgroundIndex: _getBackgroundIndex(),
-          backgroundImage: widget.card.backgroundImage ?? 'assets/images/business_cards/1.png',
-          existingCard: widget.card, // 既存のカードを渡す
+        builder: (context) => CardEditScreen(
+          card: widget.card,
         ),
       ),
     );
