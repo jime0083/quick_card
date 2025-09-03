@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 import '../models/business_card.dart';
 import '../providers/card_provider.dart';
+import '../providers/language_provider.dart';
+import '../widgets/language_selector.dart';
 import 'card_preview_screen.dart';
 
 class BackSideInputScreen extends StatefulWidget {
@@ -98,6 +100,9 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: const [
+          LanguageSelector(),
+        ],
       ),
       body: Form(
         key: _formKey,
@@ -238,93 +243,105 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
   Widget _buildCategoryInput(String category) {
     final controllers = _controllers[category]!;
     
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[300]!),
-        borderRadius: BorderRadius.circular(8),
-        color: Colors.grey[50],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            _getCategoryDisplayName(category),
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
-            ),
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.grey[50],
           ),
-          const SizedBox(height: 12),
-          // カテゴリに応じて入力フィールド数を調整
-          if (category == 'language' || category == 'framework' || category == 'qualification') ...[
-            TextFormField(
-              controller: controllers[0],
-              decoration: const InputDecoration(
-                labelText: '内容',
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _getCategoryDisplayName(category),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
               ),
-              maxLines: 1,
-            ),
-          ] else if (category == 'career') ...[
-            TextFormField(
-              controller: controllers[0],
-              decoration: const InputDecoration(
-                labelText: '30文字程度',
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-              maxLines: 1,
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: controllers[1],
-              decoration: const InputDecoration(
-                labelText: '30文字程度',
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-              maxLines: 1,
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: controllers[2],
-              decoration: const InputDecoration(
-                labelText: '30文字程度',
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-              maxLines: 1,
-            ),
-          ] else if (category == 'portfolio') ...[
-            TextFormField(
-              controller: controllers[0],
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-              maxLines: 1,
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: controllers[1],
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-              maxLines: 1,
-            ),
-          ],
-        ],
-      ),
+              const SizedBox(height: 12),
+              // カテゴリに応じて入力フィールド数を調整
+              if (category == 'language' || category == 'framework' || category == 'qualification') ...[
+                TextFormField(
+                  controller: controllers[0],
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                    // ラベルテキストを削除
+                  ),
+                  maxLines: 1,
+                ),
+              ] else if (category == 'career') ...[
+                TextFormField(
+                  controller: controllers[0],
+                  decoration: InputDecoration(
+                    labelText: languageProvider.currentLocale.languageCode == 'en' 
+                        ? 'About 30 characters' 
+                        : '30文字程度',
+                    border: const OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  maxLines: 1,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: controllers[1],
+                  decoration: InputDecoration(
+                    labelText: languageProvider.currentLocale.languageCode == 'en' 
+                        ? 'About 30 characters' 
+                        : '30文字程度',
+                    border: const OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  maxLines: 1,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: controllers[2],
+                  decoration: InputDecoration(
+                    labelText: languageProvider.currentLocale.languageCode == 'en' 
+                        ? 'About 30 characters' 
+                        : '30文字程度',
+                    border: const OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  maxLines: 1,
+                ),
+              ] else if (category == 'portfolio') ...[
+                TextFormField(
+                  controller: controllers[0],
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                    // ラベルテキストを削除
+                  ),
+                  maxLines: 1,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: controllers[1],
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                    // ラベルテキストを削除
+                  ),
+                  maxLines: 1,
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -453,12 +470,6 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
             createdAt: DateTime.now(),
             updatedAt: DateTime.now(),
           );
-
-    if (widget.existingCard != null) {
-      context.read<CardProvider>().updateCard(card);
-    } else {
-      context.read<CardProvider>().addCard(card);
-    }
 
     Navigator.pushReplacement(
       context,

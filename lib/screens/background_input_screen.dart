@@ -8,6 +8,8 @@ import 'dart:convert';
 import 'dart:html' as html;
 import '../models/business_card.dart';
 import '../providers/card_provider.dart';
+import '../providers/language_provider.dart';
+import '../widgets/language_selector.dart';
 import 'card_preview_screen.dart';
 import 'back_side_input_screen.dart';
 
@@ -113,6 +115,9 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: const [
+          LanguageSelector(),
+        ],
       ),
       body: Form(
         key: _formKey,
@@ -212,36 +217,49 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
         const SizedBox(height: 16),
         const SizedBox(height: 16),
         
-        // 氏名（日本語）
-        TextFormField(
-          controller: _nameJaController,
-          decoration: InputDecoration(
-            labelText: AppLocalizations.of(context)!.nameJapanese,
-            border: const OutlineInputBorder(),
-            prefixIcon: const Icon(Icons.person),
-          ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return AppLocalizations.of(context)!.nameJapaneseRequired;
-            }
-            return null;
+        // 氏名（日本語）- 言語に応じてラベルを変更
+        Consumer<LanguageProvider>(
+          builder: (context, languageProvider, child) {
+            final isEnglish = languageProvider.currentLocale.languageCode == 'en';
+            
+            return TextFormField(
+              controller: _nameJaController,
+              decoration: InputDecoration(
+                labelText: isEnglish ? 'Name' : AppLocalizations.of(context)!.nameJapanese,
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.person),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return isEnglish ? 'Name is required' : AppLocalizations.of(context)!.nameJapaneseRequired;
+                }
+                return null;
+              },
+            );
           },
         ),
         const SizedBox(height: 16),
         
-        // 氏名（英語）
-        TextFormField(
-          controller: _nameEnController,
-          decoration: InputDecoration(
-            labelText: AppLocalizations.of(context)!.nameEnglish,
-            border: const OutlineInputBorder(),
-            prefixIcon: const Icon(Icons.person_outline),
-          ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return AppLocalizations.of(context)!.nameEnglishRequired;
+        // 氏名（英語）- 日本語選択時のみ表示
+        Consumer<LanguageProvider>(
+          builder: (context, languageProvider, child) {
+            if (languageProvider.currentLocale.languageCode == 'ja') {
+              return TextFormField(
+                controller: _nameEnController,
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.nameEnglish,
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.person_outline),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return AppLocalizations.of(context)!.nameEnglishRequired;
+                  }
+                  return null;
+                },
+              );
             }
-            return null;
+            return const SizedBox.shrink();
           },
         ),
         const SizedBox(height: 16),
@@ -401,8 +419,23 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
 
   // 表面情報を保存して裏面入力に進む
   void _proceedToBackSide() {
-    if (!_formKey.currentState!.validate()) {
-      return;
+    // 言語に応じてバリデーションを調整
+    final languageProvider = context.read<LanguageProvider>();
+    final isJapanese = languageProvider.currentLocale.languageCode == 'ja';
+    
+    if (isJapanese) {
+      // 日本語選択時は通常のバリデーションを実行
+      if (!_formKey.currentState!.validate()) {
+        return;
+      }
+    } else {
+      // 英語選択時は「氏名（英語）」以外のバリデーションのみ実行
+      if (_nameJaController.text.trim().isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Name is required')),
+        );
+        return;
+      }
     }
     
     Navigator.push(
@@ -419,9 +452,12 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
   }
   
   Map<String, dynamic> _getFrontData() {
+    final languageProvider = context.read<LanguageProvider>();
+    final isJapanese = languageProvider.currentLocale.languageCode == 'ja';
+    
     return {
       'nameJa': _nameJaController.text.trim(),
-      'nameEn': _nameEnController.text.trim(),
+      'nameEn': isJapanese ? _nameEnController.text.trim() : '', // 英語選択時は空文字
       'profession': _selectedProfession,
       'iconImagePath': _selectedIconImage?.path,
       'iconImageBytes': _selectedIconImageBytes,

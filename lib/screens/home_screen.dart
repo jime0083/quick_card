@@ -4,6 +4,7 @@ import '../l10n/app_localizations.dart';
 import '../models/business_card.dart';
 import '../services/business_card_service.dart';
 import '../providers/card_provider.dart';
+import '../widgets/language_selector.dart';
 import 'template_selection_screen.dart';
 import 'card_preview_screen.dart';
 import 'background_input_screen.dart';
@@ -47,6 +48,9 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: const [
+          LanguageSelector(),
+        ],
       ),
       body: Consumer<CardProvider>(
         builder: (context, cardProvider, child) {

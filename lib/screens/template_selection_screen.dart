@@ -4,6 +4,7 @@ import '../models/template.dart';
 import '../models/business_card.dart';
 import '../services/business_card_service.dart';
 import '../providers/card_provider.dart';
+import '../widgets/language_selector.dart';
 import 'card_edit_screen.dart';
 
 class TemplateSelectionScreen extends StatefulWidget {
@@ -30,6 +31,9 @@ class _TemplateSelectionScreenState extends State<TemplateSelectionScreen> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: const [
+          LanguageSelector(),
+        ],
       ),
       body: Column(
         children: [

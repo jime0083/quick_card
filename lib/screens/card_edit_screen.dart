@@ -7,6 +7,8 @@ import 'dart:convert';
 import 'dart:html' as html;
 import '../models/business_card.dart';
 import '../providers/card_provider.dart';
+import '../providers/language_provider.dart';
+import '../widgets/language_selector.dart';
 import 'card_preview_screen.dart';
 import 'back_side_input_screen.dart';
 
@@ -106,6 +108,9 @@ class _CardEditScreenState extends State<CardEditScreen> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: const [
+          LanguageSelector(),
+        ],
       ),
       body: Column(
         children: [
@@ -262,39 +267,56 @@ class _CardEditScreenState extends State<CardEditScreen> {
         const SizedBox(height: 16),
         const SizedBox(height: 16),
 
-        // 氏名（日本語）
-        TextFormField(
-          controller: _nameJaController,
-          decoration: const InputDecoration(
-            labelText: '氏名（日本語）',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.person),
-          ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return '氏名（日本語）は必須です';
-            }
-            return null;
+        // 氏名（日本語）- 言語に応じてラベルを変更
+        Consumer<LanguageProvider>(
+          builder: (context, languageProvider, child) {
+            final isEnglish = languageProvider.currentLocale.languageCode == 'en';
+            
+            return TextFormField(
+              controller: _nameJaController,
+              decoration: InputDecoration(
+                labelText: isEnglish ? 'Name' : '氏名（日本語）',
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.person),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return isEnglish ? 'Name is required' : '氏名（日本語）は必須です';
+                }
+                return null;
+              },
+            );
           },
         ),
         const SizedBox(height: 16),
 
-        // 氏名（英語）
-        TextFormField(
-          controller: _nameEnController,
-          decoration: const InputDecoration(
-            labelText: '氏名（英語）',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.person_outline),
-          ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return '氏名（英語）は必須です';
+        // 氏名（英語）- 日本語選択時のみ表示
+        Consumer<LanguageProvider>(
+          builder: (context, languageProvider, child) {
+            if (languageProvider.currentLocale.languageCode == 'ja') {
+              return Column(
+                children: [
+                  TextFormField(
+                    controller: _nameEnController,
+                    decoration: const InputDecoration(
+                      labelText: '氏名（英語）',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.person_outline),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return '氏名（英語）は必須です';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              );
             }
-            return null;
+            return const SizedBox.shrink();
           },
         ),
-        const SizedBox(height: 16),
 
         // 職業選択
         DropdownButtonFormField<String>(
@@ -444,9 +466,12 @@ class _CardEditScreenState extends State<CardEditScreen> {
   }
 
   Map<String, dynamic> _getFrontData() {
+    final languageProvider = context.read<LanguageProvider>();
+    final isJapanese = languageProvider.currentLocale.languageCode == 'ja';
+    
     return {
       'nameJa': _nameJaController.text.trim(),
-      'nameEn': _nameEnController.text.trim(),
+      'nameEn': isJapanese ? _nameEnController.text.trim() : '', // 英語選択時は空文字
       'profession': _selectedProfession,
       'iconImagePath': _selectedIconImage?.path,
       'iconImageBytes': _selectedIconImageBytes,
@@ -468,8 +493,23 @@ class _CardEditScreenState extends State<CardEditScreen> {
   }
 
   void _proceedToBackSide() {
-    if (!_formKey.currentState!.validate()) {
-      return;
+    // 言語に応じてバリデーションを調整
+    final languageProvider = context.read<LanguageProvider>();
+    final isJapanese = languageProvider.currentLocale.languageCode == 'ja';
+    
+    // 日本語選択時のみ「氏名（英語）」のバリデーションを実行
+    if (isJapanese) {
+      if (!_formKey.currentState!.validate()) {
+        return;
+      }
+    } else {
+      // 英語選択時は「氏名（英語）」以外のバリデーションのみ実行
+      if (_nameJaController.text.trim().isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('氏名（日本語）は必須です')),
+        );
+        return;
+      }
     }
 
     Navigator.push(

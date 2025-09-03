@@ -7,7 +7,6 @@ import 'services/business_card_service.dart';
 import 'providers/card_provider.dart';
 import 'providers/language_provider.dart';
 import 'screens/home_screen.dart';
-import 'screens/language_selection_screen.dart';
 import 'models/business_card.dart';
 
 void main() async {
@@ -48,9 +47,7 @@ class MyApp extends StatelessWidget {
               Locale('ja', 'JP'),
               Locale('en', 'US'),
             ],
-            home: languageProvider.isFirstLaunch
-                ? const LanguageSelectionScreen()
-                : const HomeScreen(),
+            home: const HomeScreen(),
             debugShowCheckedModeBanner: false,
           );
         },
