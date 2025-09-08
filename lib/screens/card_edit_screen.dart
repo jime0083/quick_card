@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:convert';
-import 'dart:html' as html;
 import '../models/business_card.dart';
 import '../providers/card_provider.dart';
 import '../providers/language_provider.dart';

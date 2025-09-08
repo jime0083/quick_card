@@ -10,11 +10,9 @@ import '../models/business_card.dart';
 import '../models/template.dart';
 import '../services/qr_service.dart';
 import '../services/image_save_service.dart';
-import '../services/image_save_service_web.dart';
 import '../widgets/card_preview_widget.dart';
 import 'card_edit_screen.dart';
 import 'background_input_screen.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class CardPreviewScreen extends StatefulWidget {
   final BusinessCard card;
@@ -403,21 +401,13 @@ class _CardPreviewScreenState extends State<CardPreviewScreen> {
       }
 
       // 画像保存を実行
-      final success = kIsWeb 
-          ? await ImageSaveServiceWeb.saveBusinessCardImages(
-              frontSideBytes: frontSideBytes,
-              backSideBytes: backSideBytes,
-              cardName: widget.card.personalInfo.nameJa.isNotEmpty 
-                  ? widget.card.personalInfo.nameJa 
-                  : '名刺',
-            )
-          : await ImageSaveService.saveBusinessCardImages(
-              frontSideBytes: frontSideBytes,
-              backSideBytes: backSideBytes,
-              cardName: widget.card.personalInfo.nameJa.isNotEmpty 
-                  ? widget.card.personalInfo.nameJa 
-                  : '名刺',
-            );
+      final success = await ImageSaveService.saveBusinessCardImages(
+        frontSideBytes: frontSideBytes,
+        backSideBytes: backSideBytes,
+        cardName: widget.card.personalInfo.nameJa.isNotEmpty 
+            ? widget.card.personalInfo.nameJa 
+            : '名刺',
+      );
 
       // ローディングを閉じる
       Navigator.of(context).pop();
