@@ -332,56 +332,51 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
         return Container();
     }
     
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(
-          flex: 4,
-          child: DropdownButtonFormField<String>(
-            value: selectedType,
-            decoration: InputDecoration(
-              labelText: 'SNS $index',
-              border: const OutlineInputBorder(),
-            ),
-            items: _snsOptions.map((option) {
-              return DropdownMenuItem(
-                value: option,
-                child: Text(option),
-              );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                switch (index) {
-                  case 1:
-                    _sns1Type = value;
-                    break;
-                  case 2:
-                    _sns2Type = value;
-                    break;
-                  case 3:
-                    _sns3Type = value;
-                    break;
-                  case 4:
-                    _sns4Type = value;
-                    break;
-                }
-              });
-            },
+        DropdownButtonFormField<String>(
+          value: selectedType,
+          decoration: InputDecoration(
+            labelText: 'SNS $index',
+            border: const OutlineInputBorder(),
           ),
+          items: _snsOptions.map((option) {
+            return DropdownMenuItem(
+              value: option,
+              child: Text(option),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              switch (index) {
+                case 1:
+                  _sns1Type = value;
+                  break;
+                case 2:
+                  _sns2Type = value;
+                  break;
+                case 3:
+                  _sns3Type = value;
+                  break;
+                case 4:
+                  _sns4Type = value;
+                  break;
+              }
+            });
+          },
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          flex: 6,
-          child: TextFormField(
-            controller: controller,
-            enabled: selectedType != null,
-            decoration: InputDecoration(
-              labelText: selectedType == 'メールアドレス' ? 'アドレス' : 'URL',
-              border: const OutlineInputBorder(),
-            ),
-            keyboardType: selectedType == 'メールアドレス' 
-                ? TextInputType.emailAddress 
-                : TextInputType.url,
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          enabled: selectedType != null,
+          decoration: InputDecoration(
+            labelText: selectedType == 'メールアドレス' ? 'アドレス' : 'URL',
+            border: const OutlineInputBorder(),
           ),
+          keyboardType: selectedType == 'メールアドレス' 
+              ? TextInputType.emailAddress 
+              : TextInputType.url,
         ),
       ],
     );
@@ -415,6 +410,12 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
   bool _isTemplate2() {
     return (widget.backgroundImage != null && widget.backgroundImage!.contains('2.png')) ||
            (widget.backgroundIndex == 1);
+  }
+
+  // テンプレート1/2/3かどうかを判定
+  bool _isTemplate123() {
+    final idx = widget.backgroundIndex;
+    return idx == 0 || idx == 1 || idx == 2;
   }
 
   // 表面情報を保存して裏面入力に進む

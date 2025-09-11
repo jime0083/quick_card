@@ -174,7 +174,7 @@ class CardPreviewWidget extends StatelessWidget {
               card.personalInfo.profession,
               style: TextStyle(
                 color: _isTemplate1() ? Colors.red : (_isTemplate2() ? Colors.red : template.accentColor),
-                fontSize: (template.fontSize - 2) * 2.25, // 1.5倍の1.5倍
+                fontSize: ((template.fontSize - 2) * 2.25) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0), // 1.5倍の1.5倍（テンプレ1-3は70%）
                 fontWeight: FontWeight.w500,
                 fontFamily: template.fontFamily ?? 'Arial',
               ),
@@ -925,7 +925,7 @@ class CardPreviewWidget extends StatelessWidget {
               card.personalInfo.nameJa,
               style: TextStyle(
                 color: _isTemplate2() ? Colors.black : template.textColor,
-                fontSize: (template.fontSize + 4) * 2,
+                fontSize: ((template.fontSize + 4) * 2) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0),
                 fontWeight: FontWeight.bold,
                 fontFamily: template.fontFamily ?? 'Arial',
               ),
@@ -938,7 +938,7 @@ class CardPreviewWidget extends StatelessWidget {
               card.personalInfo.nameEn,
               style: TextStyle(
                 color: _isTemplate2() ? Colors.black : template.textColor,
-                fontSize: (template.fontSize - 2) * 2,
+                fontSize: ((template.fontSize - 2) * 2) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0),
                 fontFamily: template.fontFamily ?? 'Arial',
               ),
             ),
@@ -951,7 +951,7 @@ class CardPreviewWidget extends StatelessWidget {
               card.personalInfo.title,
               style: TextStyle(
                 color: template.accentColor,
-                fontSize: (template.fontSize - 2) * 1.75,
+                fontSize: ((template.fontSize - 2) * 1.75) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0),
                 fontWeight: FontWeight.w500,
                 fontFamily: template.fontFamily ?? 'Arial',
               ),
@@ -966,7 +966,7 @@ class CardPreviewWidget extends StatelessWidget {
               card.personalInfo.catchphrase!,
               style: TextStyle(
                 color: template.textColor,
-                fontSize: (template.fontSize - 4) * 2,
+                fontSize: ((template.fontSize - 4) * 2) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0),
                 fontStyle: FontStyle.italic,
                 fontFamily: template.fontFamily ?? 'Arial',
               ),
@@ -1094,7 +1094,7 @@ class CardPreviewWidget extends StatelessWidget {
             _getCategoryDisplayName(category),
             style: TextStyle(
               color: _isTemplate5() ? const Color(0xFF3333FF) : (_isTemplate2() ? Colors.red : template.accentColor),
-              fontSize: (template.fontSize - 4) * 2.25,
+              fontSize: ((template.fontSize - 4) * 2.25) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0),
               fontWeight: FontWeight.bold,
               fontFamily: template.fontFamily ?? 'Arial',
             ),
@@ -1129,7 +1129,7 @@ class CardPreviewWidget extends StatelessWidget {
                         content1,
                         style: TextStyle(
                           color: _isTemplate2() ? Colors.white : template.textColor,
-                          fontSize: (template.fontSize - 6) * 2.25,
+                          fontSize: ((template.fontSize - 6) * 2.25) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0),
                           fontFamily: template.fontFamily ?? 'Arial',
                         ),
                       ),
@@ -1162,7 +1162,7 @@ class CardPreviewWidget extends StatelessWidget {
                         content2,
                         style: TextStyle(
                           color: _isTemplate2() ? Colors.white : template.textColor,
-                          fontSize: (template.fontSize - 6) * 2.25,
+                          fontSize: ((template.fontSize - 6) * 2.25) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0),
                           fontFamily: template.fontFamily ?? 'Arial',
                         ),
                       ),
@@ -1176,7 +1176,7 @@ class CardPreviewWidget extends StatelessWidget {
                   content1,
                   style: TextStyle(
                     color: _isTemplate5() ? Colors.black : (_isTemplate2() ? Colors.white : template.textColor),
-                    fontSize: (template.fontSize - 6) * 2.25,
+                    fontSize: ((template.fontSize - 6) * 2.25) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0),
                     fontFamily: template.fontFamily ?? 'Arial',
                   ),
                 ),
@@ -1187,7 +1187,7 @@ class CardPreviewWidget extends StatelessWidget {
                   content2,
                   style: TextStyle(
                     color: _isTemplate5() ? Colors.black : (_isTemplate2() ? Colors.white : template.textColor),
-                    fontSize: (template.fontSize - 6) * 2.25,
+                    fontSize: ((template.fontSize - 6) * 2.25) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0),
                     fontFamily: template.fontFamily ?? 'Arial',
                   ),
                 ),
@@ -1200,7 +1200,7 @@ class CardPreviewWidget extends StatelessWidget {
               content3,
               style: TextStyle(
                 color: _isTemplate2() ? Colors.white : template.textColor,
-                fontSize: (template.fontSize - 6) * 2.25,
+                fontSize: ((template.fontSize - 6) * 2.25) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0),
                 fontFamily: template.fontFamily ?? 'Arial',
               ),
             ),
@@ -1264,7 +1264,7 @@ class CardPreviewWidget extends StatelessWidget {
               value,
               style: TextStyle(
                 color: template.textColor,
-                fontSize: (template.fontSize - 10) * 4.5, // 2倍に変更
+                fontSize: ((template.fontSize - 10) * 4.5) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0), // テンプレ1-3は70%
                 fontFamily: template.fontFamily ?? 'Arial',
               ),
               textAlign: TextAlign.left,
@@ -1566,9 +1566,9 @@ class CardPreviewWidget extends StatelessWidget {
           'Quick Card',
           style: TextStyle(
             color: template.textColor.withOpacity(0.6),
-            fontSize: (_isTemplate6() && isBackSide) 
-                ? (template.fontSize - 8) * 0.8 
-                : (template.fontSize - 8),
+            fontSize: (_isTemplate6() && isBackSide)
+                ? (template.fontSize - 8) * 0.8
+                : (((template.fontSize - 8)) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0)),
             fontFamily: template.fontFamily ?? 'Arial',
           ),
         ),
