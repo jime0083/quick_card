@@ -72,16 +72,17 @@ class TemplateData {
       padding: EdgeInsets.all(20.0),
       borderRadius: BorderRadius.all(Radius.circular(4.0)),
     ),
+    // テンプレート6（テンプレート4と同一デザイン・配置）
     CardTemplate(
-      id: 'template_05',
-      name: 'イラスト・カジュアル',
-      description: 'アイコン多用、親しみやすいデザイン',
-      backgroundColor: Color(0xFFFFF8E1),
-      textColor: Color(0xFF424242),
-      accentColor: Color(0xFFFF9800),
-      fontSize: 14.0,
-      padding: EdgeInsets.all(16.0),
-      borderRadius: BorderRadius.all(Radius.circular(16.0)),
+      id: 'template_06',
+      name: 'テンプレート6（横型・3.png）',
+      description: 'テンプレート4と同一レイアウト（背景: 3.png）',
+      backgroundColor: Color(0xFFF8F9FA),
+      textColor: Color(0xFF2C3E50),
+      accentColor: Color(0xFF3498DB),
+      fontSize: 13.0,
+      padding: EdgeInsets.all(20.0),
+      borderRadius: BorderRadius.all(Radius.circular(4.0)),
     ),
   ];
 

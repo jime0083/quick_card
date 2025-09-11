@@ -149,11 +149,10 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
     if (widget.backgroundIndex == 3) {
       return 'assets/images/business_cards/裏4.png';
     }
-    // テンプレート5（インデックス4、3.png）の場合は裏3.png
     if (widget.backgroundIndex == 4) {
       return 'assets/images/business_cards/裏3.png';
     }
-    // テンプレート6（インデックス5、5.png）の場合は裏3.png
+    // テンプレート6（インデックス5）の場合も裏3.png（横型）
     if (widget.backgroundIndex == 5) {
       return 'assets/images/business_cards/裏3.png';
     }
