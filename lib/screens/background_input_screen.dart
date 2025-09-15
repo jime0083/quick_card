@@ -45,7 +45,7 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
   final List<String> _professionOptions = ['Engineer', 'Solo maker'];
   
   // SNS選択用
-  final List<String> _snsOptions = ['X(Twitter)', 'インスタ', 'Github', 'メールアドレス', 'Tiktok', 'Youtube'];
+  final List<String> _snsOptions = ['X(Twitter)', 'instagram', 'Github', 'Mail', 'Tiktok', 'Youtube'];
   String? _sns1Type;
   String? _sns2Type;
   String? _sns3Type;
@@ -371,10 +371,10 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
           controller: controller,
           enabled: selectedType != null,
           decoration: InputDecoration(
-            labelText: selectedType == 'メールアドレス' ? 'アドレス' : 'URL',
+            labelText: selectedType == 'Mail' ? 'アドレス' : 'URL',
             border: const OutlineInputBorder(),
           ),
-          keyboardType: selectedType == 'メールアドレス' 
+          keyboardType: selectedType == 'Mail' 
               ? TextInputType.emailAddress 
               : TextInputType.url,
         ),
@@ -457,8 +457,11 @@ class _BackgroundInputScreenState extends State<BackgroundInputScreen> {
     final isJapanese = languageProvider.currentLocale.languageCode == 'ja';
     
     return {
-      'nameJa': _nameJaController.text.trim(),
-      'nameEn': isJapanese ? _nameEnController.text.trim() : '', // 英語選択時は空文字
+      // 表示中の入力欄に応じて保存先を切り替える
+      // 日本語UI: nameJa は日本語欄、nameEn は英語欄
+      // 英語UI: 表示中の Name 欄（_nameJaController）を nameEn に保存し、nameJa は空にする
+      'nameJa': isJapanese ? _nameJaController.text.trim() : '',
+      'nameEn': isJapanese ? _nameEnController.text.trim() : _nameJaController.text.trim(),
       'profession': _selectedProfession,
       'iconImagePath': _selectedIconImage?.path,
       'iconImageBytes': _selectedIconImageBytes,

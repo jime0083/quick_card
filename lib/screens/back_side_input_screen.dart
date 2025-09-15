@@ -30,15 +30,15 @@ class BackSideInputScreen extends StatefulWidget {
 class _BackSideInputScreenState extends State<BackSideInputScreen> {
   final _formKey = GlobalKey<FormState>();
   
-  // 裏面カテゴリ選択
-  final List<String> _availableCategories = ['language', 'framework', 'qualification', 'career', 'portfolio'];
+  // 裏面カテゴリ選択（言語・フレームワーク・経歴・ポートフォリオの4種類）
+  final List<String> _availableCategories = ['language', 'framework', 'career', 'portfolio'];
   List<String> _selectedCategories = [];
   
   // 各カテゴリの入力フィールド（行数に応じて調整）
   final Map<String, List<TextEditingController>> _controllers = {
     'language': [TextEditingController()], // 1行
     'framework': [TextEditingController()], // 1行
-    'qualification': [TextEditingController()], // 1行
+    // 'qualification' を削除
     'career': [TextEditingController(), TextEditingController(), TextEditingController()], // 3行
     'portfolio': [TextEditingController(), TextEditingController()], // 2行
   };
@@ -61,9 +61,7 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
       if (backSideInfo.framework1 != null) {
         _controllers['framework']![0].text = backSideInfo.framework1!;
       }
-      if (backSideInfo.qualification1 != null) {
-        _controllers['qualification']![0].text = backSideInfo.qualification1!;
-      }
+      // qualification は入力対象から除外
       if (backSideInfo.career1 != null) {
         _controllers['career']![0].text = backSideInfo.career1!;
       }
@@ -264,7 +262,7 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
               ),
               const SizedBox(height: 12),
               // カテゴリに応じて入力フィールド数を調整
-              if (category == 'language' || category == 'framework' || category == 'qualification') ...[
+              if (category == 'language' || category == 'framework') ...[
                 TextFormField(
                   controller: controllers[0],
                   decoration: const InputDecoration(
@@ -350,8 +348,7 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
         return AppLocalizations.of(context)!.language;
       case 'framework':
         return AppLocalizations.of(context)!.framework;
-      case 'qualification':
-        return AppLocalizations.of(context)!.qualification;
+      // qualification は削除
       case 'career':
         return AppLocalizations.of(context)!.career;
       case 'portfolio':
@@ -383,8 +380,8 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
       language2: null, // 1行のみ
       framework1: _controllers['framework']?[0].text.trim(),
       framework2: null, // 1行のみ
-      qualification1: _controllers['qualification']?[0].text.trim(),
-      qualification2: null, // 1行のみ
+      qualification1: null,
+      qualification2: null,
       career1: _controllers['career']?[0].text.trim(),
       career2: _controllers['career']?[1].text.trim(),
       career3: _controllers['career']?[2].text.trim(),
