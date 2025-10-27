@@ -9,17 +9,19 @@ import '../l10n/app_localizations.dart';
 import '../models/business_card.dart';
 import '../models/template.dart';
 import '../services/qr_service.dart';
-import '../services/image_save_service.dart';
+import '../services/image_save_service.dart' if (dart.library.html) '../services/image_save_service_web.dart';
 import '../widgets/card_preview_widget.dart';
 import 'card_edit_screen.dart';
 import 'background_input_screen.dart';
 
 class CardPreviewScreen extends StatefulWidget {
   final BusinessCard card;
+  final bool showQRCodeInitially;
 
   const CardPreviewScreen({
     super.key,
     required this.card,
+    this.showQRCodeInitially = false,
   });
 
   @override
@@ -35,6 +37,10 @@ class _CardPreviewScreenState extends State<CardPreviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 初回ビルド時にQR表示初期値を反映
+    if (widget.showQRCodeInitially && !_showQRCode) {
+      _showQRCode = true;
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.card.name),

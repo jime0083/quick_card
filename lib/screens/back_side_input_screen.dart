@@ -467,10 +467,17 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
             updatedAt: DateTime.now(),
           );
 
+    // 保存（新規・更新に関わらず永続化）
+    if (widget.existingCard != null) {
+      context.read<CardProvider>().updateCard(card);
+    } else {
+      context.read<CardProvider>().addCard(card);
+    }
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => CardPreviewScreen(card: card),
+        builder: (context) => CardPreviewScreen(card: card, showQRCodeInitially: true),
       ),
     );
   }

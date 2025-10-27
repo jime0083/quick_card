@@ -1,8 +1,6 @@
-import 'dart:io';
+import 'dart:io' show Platform;
 import 'dart:typed_data';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -36,12 +34,17 @@ class ImageSaveService {
 
   /// 必要な権限を要求
   static Future<bool> _requestPermissions() async {
-    if (Platform.isAndroid) {
-      final status = await Permission.storage.request();
-      return status.isGranted;
-    } else if (Platform.isIOS) {
-      final status = await Permission.photos.request();
-      return status.isGranted;
+    try {
+      if (Platform.isAndroid) {
+        final status = await Permission.storage.request();
+        return status.isGranted;
+      } else if (Platform.isIOS) {
+        final status = await Permission.photos.request();
+        return status.isGranted;
+      }
+    } catch (_) {
+      // Webやその他プラットフォームでは Platform 使用不可
+      return true;
     }
     return true;
   }

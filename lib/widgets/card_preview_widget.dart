@@ -294,7 +294,7 @@ class CardPreviewWidget extends StatelessWidget {
                                 card.personalInfo.nameEn,
                                 style: TextStyle(
                                   color: (_isTemplate5() || _isTemplate6()) ? Colors.black : Colors.white,
-                                  fontSize: _scaleT456((template.fontSize + 2) * 1.5) * 1.2 * (_isTemplate456() ? 0.8 : 1.0),
+                                  fontSize: _isTemplate456() ? 8.0 : _scaleT456((template.fontSize + 2) * 1.5) * 1.2,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: template.fontFamily ?? 'Arial',
                                 ),
@@ -328,7 +328,7 @@ class CardPreviewWidget extends StatelessWidget {
                                 card.personalInfo.nameEn,
                                 style: TextStyle(
                                   color: (_isTemplate5() || _isTemplate6()) ? Colors.black : Colors.white,
-                                  fontSize: _scaleT456((template.fontSize - 2) * 1.2) * (_isTemplate456() ? 0.8 : 1.0),
+                                  fontSize: _isTemplate456() ? 8.0 : _scaleT456((template.fontSize - 2) * 1.2),
                                   fontWeight: FontWeight.w400,
                                   fontFamily: template.fontFamily ?? 'Arial',
                                 ),
@@ -1269,11 +1269,12 @@ class CardPreviewWidget extends StatelessWidget {
     // URLまたはメールアドレスの場合はQRコードを表示
     if (value.startsWith('http://') || value.startsWith('https://') || 
         value.startsWith('mailto:') || value.startsWith('tel:') ||
-        (type == 'メールアドレス' && value.contains('@'))) {
+        // 型に関わらずメール形式を検出
+        value.contains('@')) {
       
       // メールアドレスの場合はmailto:プレフィックスを追加
       String qrData = value;
-      if (type == 'メールアドレス' && !value.startsWith('mailto:')) {
+      if (((type == 'メールアドレス') || (type == 'Mail') || value.contains('@')) && !value.startsWith('mailto:')) {
         qrData = 'mailto:$value';
       }
       

@@ -50,5 +50,8 @@
 	<string>名刺画像を保存するために写真ライブラリへのアクセスが必要です。</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>名刺画像を保存するために写真ライブラリへのアクセスが必要です。</string>
+	<!-- カメラ利用（QR読み取り等）の権限 -->
+	<key>NSCameraUsageDescription</key>
+	<string>名刺情報のQRコードを読み取るためにカメラへのアクセスが必要です。</string>
 </dict>
 </plist>
