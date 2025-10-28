@@ -1,3 +1,6 @@
+# Firebase Hosting public directory
+public/
+functions/node_modules/
 # Miscellaneous
 *.class
 *.log

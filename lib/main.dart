@@ -5,6 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase_options.dart';
 import 'services/business_card_service.dart';
 import 'providers/card_provider.dart';
 import 'providers/language_provider.dart';
@@ -14,7 +15,9 @@ import 'models/business_card.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   // 匿名認証（UIなし）
   try {
     await FirebaseAuth.instance.signInAnonymously();

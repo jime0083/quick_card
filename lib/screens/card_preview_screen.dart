@@ -33,6 +33,7 @@ class _CardPreviewScreenState extends State<CardPreviewScreen> {
   bool _showQRCode = false;
   String? _qrData; // 画像共有用のQRデータ（data URI）
   bool _isGeneratingQr = false;
+  int _qrRetries = 0;
   
   // 画像変換用のGlobalKey
   final GlobalKey _frontSideKey = GlobalKey();
@@ -156,7 +157,7 @@ class _CardPreviewScreenState extends State<CardPreviewScreen> {
         ),
         const SizedBox(height: 16),
         const Text(
-          'このQRコードから名刺画像（JPEG）を取得できます',
+          'このQRコードから名刺画像を取得できます（QRコード表示まで30秒程度かかります）\n名刺画像の保存期間は2年間となっています。\n2年経つとキャリアや技術スタックが変わっている可能性が高いので名刺を作り直しましょう',
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey,
@@ -367,7 +368,7 @@ class _CardPreviewScreenState extends State<CardPreviewScreen> {
     // レイアウト完了後にキャプチャ実行
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
-        final frontSideBytes = await _captureWidgetImage(_frontSideKey);
+        final frontSideBytes = await _captureWidgetImageWithRetry(_frontSideKey, const Duration(milliseconds: 250), 40);
         if (frontSideBytes == null) {
           setState(() {
             _isGeneratingQr = false;
@@ -376,20 +377,83 @@ class _CardPreviewScreenState extends State<CardPreviewScreen> {
         }
         // タイムアウト制御（2秒以内）
         // Firebaseへアップロード → 共有URLをQRへ。2秒以内を目安に完了を試みる
-        final uploadFuture = FirebaseUploadService.uploadCardImageAndGetShortUrl(
-          jpegBytes: QRService.decodeCardImage(await QRService.encodeCardImage(frontSideBytes)),
-        );
-        final url = await uploadFuture.timeout(const Duration(seconds: 2), onTimeout: () => null);
-        setState(() {
-          _qrData = url; // URLを直接QRに埋め込み
-          _isGeneratingQr = false;
-        });
+        // 背面もキャプチャして2枚をアップロード
+        final backSideBytes = await _captureWidgetImageWithRetry(_backSideKey, const Duration(milliseconds: 250), 40);
+        Uint8List frontForUpload = frontSideBytes;
+        Uint8List? backForUpload = backSideBytes;
+
+        // テンプレートに応じて固定サイズへ正規化
+        final isVertical = _isVerticalTemplate();
+        final targetW = isVertical ? 343 : 313;
+        final targetH = isVertical ? 570 : 189;
+        frontForUpload = FirebaseUploadService.toJpegExact(frontForUpload, width: targetW, height: targetH, quality: 95);
+        if (backForUpload != null) {
+          backForUpload = FirebaseUploadService.toJpegExact(backForUpload, width: targetW, height: targetH, quality: 95);
+        }
+
+        final uploadFuture = (backForUpload != null)
+            ? FirebaseUploadService.uploadCardImagesAndGetShortUrl(
+                frontJpeg: frontForUpload,
+                backJpeg: backForUpload,
+              )
+            : FirebaseUploadService.uploadCardImageAndGetShortUrl(
+                jpegBytes: frontForUpload,
+              );
+        String? url;
+        try {
+          url = await uploadFuture.timeout(const Duration(seconds: 25), onTimeout: () => null);
+        } catch (_) {
+          url = null;
+        }
+        if (url != null) {
+          setState(() {
+            _qrData = url; // URLを直接QRに埋め込み
+            _isGeneratingQr = false;
+            _qrRetries = 0;
+          });
+        } else {
+          // 短縮URLが得られるまで再試行（最大2回、合計最大~30秒想定）
+          if (_qrRetries < 2) {
+            _qrRetries++;
+            _isGeneratingQr = false;
+            await Future.delayed(const Duration(milliseconds: 500));
+            if (mounted) _ensureQrGenerated();
+          } else {
+            // 最終フォールバック: data URI でQRを確実に表示
+            final dataUri = await QRService.encodeCardImageDataUriToFit(frontForUpload, maxBytes: 2300);
+            setState(() {
+              _qrData = dataUri;
+              _isGeneratingQr = false;
+            });
+          }
+        }
       } catch (_) {
         setState(() {
           _isGeneratingQr = false;
         });
       }
     });
+  }
+
+  Future<Uint8List?> _captureWidgetImageWithRetry(GlobalKey key, Duration interval, int maxTries) async {
+    for (int i = 0; i < maxTries; i++) {
+      final bytes = await _captureWidgetImage(key);
+      if (bytes != null && bytes.isNotEmpty) {
+        return bytes;
+      }
+      await Future.delayed(interval);
+    }
+    return null;
+  }
+
+  // 縦型テンプレート（1/2/3）かどうか判定（CardPreviewWidget と同等のロジック）
+  bool _isVerticalTemplate() {
+    final bg = widget.card.backgroundImage;
+    final id = widget.card.templateId;
+    final isT1 = (bg != null && bg.contains('1.png')) || (id.contains('background_0'));
+    final isT2 = (bg != null && bg.contains('2.png')) || (id.contains('background_1') || id.contains('template_02'));
+    final isT3 = (bg != null && bg.contains('背景6.png')) || (id.contains('background_2'));
+    return isT1 || isT2 || isT3;
   }
 
   void _handleMenuAction(String action) {

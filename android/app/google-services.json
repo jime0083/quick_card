@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "611101075233",
+    "project_id": "quick-card-317d4",
+    "storage_bucket": "quick-card-317d4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:611101075233:android:901e19e72d5f539c42c060",
+        "android_client_info": {
+          "package_name": "com.quickcard.app.quick_card"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHr6wLIh6ZUv7mput4twf1bDMzBENSANg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
