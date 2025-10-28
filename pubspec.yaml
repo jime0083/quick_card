@@ -55,6 +55,12 @@ dependencies:
   
   # 状態管理
   provider: ^6.1.1
+  # Firebase (upload/share)
+  firebase_core: ^2.27.2
+  firebase_auth: ^4.17.9
+  cloud_firestore: ^4.15.9
+  firebase_storage: ^11.6.10
+  cloud_functions: ^4.7.6
   
   # 画像保存・共有
   image_gallery_saver: ^2.0.3

@@ -13,6 +13,7 @@ import '../services/image_save_service.dart' if (dart.library.html) '../services
 import '../widgets/card_preview_widget.dart';
 import 'card_edit_screen.dart';
 import 'background_input_screen.dart';
+import '../services/firebase_upload_service.dart';
 
 class CardPreviewScreen extends StatefulWidget {
   final BusinessCard card;
@@ -30,6 +31,8 @@ class CardPreviewScreen extends StatefulWidget {
 
 class _CardPreviewScreenState extends State<CardPreviewScreen> {
   bool _showQRCode = false;
+  String? _qrData; // 画像共有用のQRデータ（data URI）
+  bool _isGeneratingQr = false;
   
   // 画像変換用のGlobalKey
   final GlobalKey _frontSideKey = GlobalKey();
@@ -40,6 +43,7 @@ class _CardPreviewScreenState extends State<CardPreviewScreen> {
     // 初回ビルド時にQR表示初期値を反映
     if (widget.showQRCodeInitially && !_showQRCode) {
       _showQRCode = true;
+      _ensureQrGenerated();
     }
     return Scaffold(
       appBar: AppBar(
@@ -133,17 +137,26 @@ class _CardPreviewScreenState extends State<CardPreviewScreen> {
           child: SizedBox(
             width: 200,
             height: 200,
-            child: QrImageView(
-              data: QRService.generateCardQRData(widget.card),
-              version: QrVersions.auto,
-              errorCorrectionLevel: QrErrorCorrectLevel.M,
-              backgroundColor: Colors.white,
-            ),
+            child: _qrData == null
+                ? Center(
+                    child: _isGeneratingQr
+                        ? const CircularProgressIndicator()
+                        : const Text(
+                            'QRコードを生成中...',
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                  )
+                : QrImageView(
+                    data: _qrData!,
+                    version: QrVersions.auto,
+                    errorCorrectionLevel: QrErrorCorrectLevel.L,
+                    backgroundColor: Colors.white,
+                  ),
           ),
         ),
         const SizedBox(height: 16),
         const Text(
-          'このQRコードを読み取ると名刺の情報を取得できます',
+          'このQRコードから名刺画像（JPEG）を取得できます',
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey,
@@ -340,6 +353,42 @@ class _CardPreviewScreenState extends State<CardPreviewScreen> {
   void _toggleQRCode() {
     setState(() {
       _showQRCode = !_showQRCode;
+    });
+    if (_showQRCode) {
+      _ensureQrGenerated();
+    }
+  }
+
+  void _ensureQrGenerated() {
+    if (_qrData != null || _isGeneratingQr) return;
+    setState(() {
+      _isGeneratingQr = true;
+    });
+    // レイアウト完了後にキャプチャ実行
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        final frontSideBytes = await _captureWidgetImage(_frontSideKey);
+        if (frontSideBytes == null) {
+          setState(() {
+            _isGeneratingQr = false;
+          });
+          return;
+        }
+        // タイムアウト制御（2秒以内）
+        // Firebaseへアップロード → 共有URLをQRへ。2秒以内を目安に完了を試みる
+        final uploadFuture = FirebaseUploadService.uploadCardImageAndGetShortUrl(
+          jpegBytes: QRService.decodeCardImage(await QRService.encodeCardImage(frontSideBytes)),
+        );
+        final url = await uploadFuture.timeout(const Duration(seconds: 2), onTimeout: () => null);
+        setState(() {
+          _qrData = url; // URLを直接QRに埋め込み
+          _isGeneratingQr = false;
+        });
+      } catch (_) {
+        setState(() {
+          _isGeneratingQr = false;
+        });
+      }
     });
   }
 

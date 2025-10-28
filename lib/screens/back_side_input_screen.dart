@@ -345,7 +345,9 @@ class _BackSideInputScreenState extends State<BackSideInputScreen> {
   String _getCategoryDisplayName(String category) {
     switch (category) {
       case 'language':
-        return AppLocalizations.of(context)!.language;
+        return Localizations.localeOf(context).languageCode == 'en'
+            ? 'Language & Skills'
+            : '言語・スキル';
       case 'framework':
         return AppLocalizations.of(context)!.framework;
       // qualification は削除

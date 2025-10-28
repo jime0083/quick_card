@@ -576,14 +576,22 @@ class CardPreviewWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 0),
-        Text(
-          _getCategoryDisplayName(category),
-          style: TextStyle(
-            color: _isTemplate5() ? const Color(0xFF3333FF) : template.accentColor,
-            fontSize: ((template.fontSize - 4) * 2.25) * 0.64 * 0.7, // 現状の70%
-            fontWeight: FontWeight.bold,
-            fontFamily: template.fontFamily ?? 'Arial',
-          ),
+        Consumer<LanguageProvider>(
+          builder: (context, languageProvider, child) {
+            final isEn = languageProvider.currentLocale.languageCode == 'en';
+            final display = (category == 'language' || category == '言語')
+                ? (isEn ? 'Language & Skills' : '言語・スキル')
+                : _getCategoryDisplayName(category);
+            return Text(
+              display,
+              style: TextStyle(
+                color: _isTemplate5() ? const Color(0xFF3333FF) : template.accentColor,
+                fontSize: ((template.fontSize - 4) * 2.25) * 0.64 * 0.7, // 現状の70%
+                fontWeight: FontWeight.bold,
+                fontFamily: template.fontFamily ?? 'Arial',
+              ),
+            );
+          },
         ),
         const SizedBox(height: 4),
         if (content1 != null && content1.isNotEmpty || content2 != null && content2.isNotEmpty) ...[
@@ -812,14 +820,22 @@ class CardPreviewWidget extends StatelessWidget {
               return _isTemplate456() ? base * 0.5 : base; // テンプレ4/5/6は上部余白を半分
             }(),
           ),
-          Text(
-            category,
-            style: TextStyle(
-              color: _isTemplate6() ? const Color(0xFF00A8FF) : (_isTemplate5() ? const Color(0xFF3333FF) : Colors.white),
-              fontSize: _scaleT456((template.fontSize - 6) * 1.8) * (_isTemplate456() ? (0.8 / 0.9) * 0.8 * 0.9 : 1.0), // さらに10%縮小
-              fontWeight: FontWeight.bold,
-              fontFamily: template.fontFamily ?? 'Arial',
-            ),
+          Consumer<LanguageProvider>(
+            builder: (context, languageProvider, child) {
+              final isEn = languageProvider.currentLocale.languageCode == 'en';
+              final display = (category == 'language' || category == '言語')
+                  ? (isEn ? 'Language & Skills' : '言語・スキル')
+                  : _getCategoryDisplayName(category);
+              return Text(
+                display,
+                style: TextStyle(
+                  color: _isTemplate6() ? const Color(0xFF00A8FF) : (_isTemplate5() ? const Color(0xFF3333FF) : Colors.white),
+                  fontSize: _scaleT456((template.fontSize - 6) * 1.8) * (_isTemplate456() ? (0.8 / 0.9) * 0.8 * 0.9 : 1.0), // さらに10%縮小
+                  fontWeight: FontWeight.bold,
+                  fontFamily: template.fontFamily ?? 'Arial',
+                ),
+              );
+            },
           ),
           const SizedBox(height: 3),
           if (content1 != null && content1.isNotEmpty || content2 != null && content2.isNotEmpty) ...[
@@ -1144,14 +1160,22 @@ class CardPreviewWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: _isTemplate456() ? 10 : 20), // 見出しの上部空白（テンプレ4/5/6は50%）
-          Text(
-            _getCategoryDisplayName(category),
-            style: TextStyle(
-              color: _isTemplate5() ? const Color(0xFF3333FF) : (_isTemplate2() ? Colors.red : template.accentColor),
-              fontSize: ((template.fontSize - 4) * 2.25) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0),
-              fontWeight: FontWeight.bold,
-              fontFamily: template.fontFamily ?? 'Arial',
-            ),
+          Consumer<LanguageProvider>(
+            builder: (context, languageProvider, child) {
+              final isEn = languageProvider.currentLocale.languageCode == 'en';
+              final display = (category == 'language' || category == '言語')
+                  ? (isEn ? 'Language & Skills' : '言語・スキル')
+                  : _getCategoryDisplayName(category);
+              return Text(
+                display,
+                style: TextStyle(
+                  color: _isTemplate5() ? const Color(0xFF3333FF) : (_isTemplate2() ? Colors.red : template.accentColor),
+                  fontSize: ((template.fontSize - 4) * 2.25) * ((_isTemplate1() || _isTemplate2() || _isTemplate3()) ? 0.7 : 1.0),
+                  fontWeight: FontWeight.bold,
+                  fontFamily: template.fontFamily ?? 'Arial',
+                ),
+              );
+            },
           ),
           const SizedBox(height: 4),
           if (content1 != null && content1.isNotEmpty || content2 != null && content2.isNotEmpty) ...[
@@ -1491,7 +1515,8 @@ class CardPreviewWidget extends StatelessWidget {
   String _getCategoryDisplayName(String category) {
     switch (category) {
       case 'language':
-        return '言語';
+        // context がないため、言語切替は利用側で行う
+        return '言語・スキル';
       case 'framework':
         return 'FW(フレームワーク)';
       case 'qualification':

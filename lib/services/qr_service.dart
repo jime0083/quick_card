@@ -71,6 +71,34 @@ class QRService {
     return base64Encode(compressed);
   }
 
+  // 名刺画像のデータURI（JPEG）を、指定バイト数以下になるよう圧縮して返す
+  static Future<String?> encodeCardImageDataUriToFit(Uint8List imageBytes, {int maxBytes = 2300}) async {
+    final img.Image? decoded = img.decodeImage(imageBytes);
+    if (decoded == null) return null;
+
+    // 試す解像度と品質の候補（小さい順）。まず確実に入るサイズを優先して2秒以内に生成。
+    final List<int> targetWidths = [80, 70, 60, 50, 40, 100, 120, 140, 160];
+    final List<int> qualities = [20, 18, 16, 14, 12, 10, 8, 6, 5];
+
+    for (final w in targetWidths) {
+      final double aspect = decoded.height / decoded.width;
+      final int h = (w * aspect).round();
+      final img.Image resized = img.copyResize(decoded, width: w, height: h);
+      for (final q in qualities) {
+        final Uint8List jpg = Uint8List.fromList(img.encodeJpg(resized, quality: q));
+        final String b64 = base64Encode(jpg);
+        final String dataUri = 'data:image/jpeg;base64,$b64';
+        // QRペイロードのバイト長（ASCII）で判定
+        if (utf8.encode(dataUri).length <= maxBytes) {
+          return dataUri;
+        }
+      }
+    }
+
+    // どうしても収まらない場合はnull
+    return null;
+  }
+
   // Base64デコードして画像を復元
   static Uint8List decodeCardImage(String base64String) {
     return base64Decode(base64String);
